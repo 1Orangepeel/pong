@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Pong Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="pongCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('pongCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let paddleHeight = 100, paddleWidth = 10, ballRadius = 10;
+        let playerX = 0, playerY = (canvas.height - paddleHeight) / 2;
+        let computerX = canvas.width - paddleWidth, computerY = (canvas.height - paddleHeight) / 2;
+        let ballX = canvas.width / 2, ballY = canvas.height / 2;
+        let ballDX = 2, ballDY = -2;
+
+        function drawPaddle(x, y) {
+            ctx.fillStyle = "white";
+            ctx.fillRect(x, y, paddleWidth, paddleHeight);
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "white";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPaddle(playerX, playerY);
+            drawPaddle(computerX, computerY);
+            drawBall();
+
+            if(ballX + ballDX > canvas.width - ballRadius || ballX + ballDX < ballRadius) {
+                ballDX = -ballDX;
+            }
+
+            if(ballY + ballDY > canvas.height - ballRadius || ballY + ballDY < ballRadius) {
+                ballDY = -ballDY;
+            }
+
+            ballX += ballDX;
+            ballY += ballDY;
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>
